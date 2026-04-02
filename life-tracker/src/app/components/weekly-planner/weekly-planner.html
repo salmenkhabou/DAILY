@@ -1,0 +1,101 @@
+<div class="weekly-planner">
+  <header class="page-header">
+    <h1>Weekly Planner</h1>
+    <div class="week-nav">
+      <button class="nav-btn" (click)="previousWeek()">‹</button>
+      <span class="week-label">
+        {{ weekDates()[0] | date:'MMM d' }} - {{ weekDates()[6] | date:'MMM d, yyyy' }}
+      </span>
+      <button class="nav-btn" (click)="nextWeek()">›</button>
+      <button class="today-btn" (click)="goToToday()">Today</button>
+    </div>
+  </header>
+
+  <div class="week-grid">
+    @for (date of weekDates(); track date.toISOString(); let i = $index) {
+      <div class="day-column" [class.today]="isToday(date)" [class.past]="date < today">
+        <div class="day-header">
+          <span class="day-name">{{ weekDays[i] }}</span>
+          <span class="day-date">{{ date | date:'d' }}</span>
+          <div class="completion-badge">{{ getDayCompletion(date) }}%</div>
+        </div>
+        <div class="day-habits">
+          @for (habit of getHabitsForDay(i); track habit.id) {
+            <div class="habit-item" 
+                 [class.completed]="isHabitCompleted(habit.id, date)"
+                 [style.borderLeftColor]="habit.color"
+                 (click)="toggleHabit(habit.id, date)">
+              <span class="habit-icon">{{ habit.icon }}</span>
+              <span class="habit-name">{{ habit.name }}</span>
+              <div class="habit-check">
+                @if (isHabitCompleted(habit.id, date)) {
+                  <span class="check">✓</span>
+                }
+              </div>
+            </div>
+          }
+          @if (!getHabitsForDay(i).length) {
+            <div class="no-habits">Rest day 😴</div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <section class="weekly-template">
+    <h2>Your Weekly Template</h2>
+    <div class="template-grid">
+      <div class="template-day">
+        <h3>🟢 Monday</h3>
+        <ul>
+          <li>Class → Gym → Short review</li>
+          <li>Early sleep</li>
+        </ul>
+      </div>
+      <div class="template-day">
+        <h3>🔵 Tuesday</h3>
+        <ul>
+          <li>Class → Startup learning block</li>
+          <li>Lighter evening</li>
+        </ul>
+      </div>
+      <div class="template-day">
+        <h3>🟢 Wednesday</h3>
+        <ul>
+          <li>Class → Gym</li>
+          <li>Coding/project block</li>
+        </ul>
+      </div>
+      <div class="template-day">
+        <h3>💜 Thursday</h3>
+        <ul>
+          <li>Class → Podcast</li>
+          <li>Social/girlfriend time</li>
+        </ul>
+      </div>
+      <div class="template-day">
+        <h3>🟡 Friday</h3>
+        <ul>
+          <li>Class → Lighter workload</li>
+          <li>Trading education</li>
+          <li>Social time</li>
+        </ul>
+      </div>
+      <div class="template-day">
+        <h3>🔴 Saturday</h3>
+        <ul>
+          <li>Gym → 2hr build block</li>
+          <li>Errands → Social</li>
+        </ul>
+      </div>
+      <div class="template-day">
+        <h3>🟣 Sunday</h3>
+        <ul>
+          <li>Recovery → Planning</li>
+          <li>Startup learning</li>
+          <li>Prep for week</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>

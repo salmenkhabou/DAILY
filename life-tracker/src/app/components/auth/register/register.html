@@ -1,0 +1,80 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <span class="logo">🎯</span>
+      <h1>Create Account</h1>
+      <p>Start your journey to a better you</p>
+    </div>
+
+    @if (success()) {
+      <div class="success-message">
+        <span class="success-icon">✉️</span>
+        <h3>Check your email!</h3>
+        <p>We've sent you a confirmation link. Please check your inbox and click the link to activate your account.</p>
+        <a routerLink="/login" class="btn-secondary">Back to Login</a>
+      </div>
+    } @else {
+      @if (error()) {
+        <div class="error-message">{{ error() }}</div>
+      }
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input 
+            type="text" 
+            id="fullName" 
+            [(ngModel)]="fullName" 
+            name="fullName"
+            placeholder="Salmen"
+            autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            [(ngModel)]="email" 
+            name="email"
+            placeholder="your@email.com"
+            autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            [(ngModel)]="password" 
+            name="password"
+            placeholder="••••••••"
+            autocomplete="new-password">
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            [(ngModel)]="confirmPassword" 
+            name="confirmPassword"
+            placeholder="••••••••"
+            autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner"></span> Creating account...
+          } @else {
+            Create Account
+          }
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+      </div>
+    }
+  </div>
+</div>

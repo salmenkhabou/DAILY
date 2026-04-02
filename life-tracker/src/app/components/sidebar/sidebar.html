@@ -1,0 +1,44 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon">🎯</span>
+      <span class="logo-text">LifeTracker</span>
+    </div>
+  </div>
+  
+  <nav class="nav-menu">
+    @for (item of navItems; track item.path) {
+      <a [routerLink]="item.path" 
+         routerLinkActive="active" 
+         class="nav-item">
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-label">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+  
+  <div class="sidebar-footer">
+    <div class="quick-stats">
+      <div class="stat">
+        <span class="stat-value">{{ habitService.todayProgress() }}%</span>
+        <span class="stat-label">Today</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ habitService.stats().currentStreak }}</span>
+        <span class="stat-label">Streak</span>
+      </div>
+    </div>
+    <div class="date-display">
+      {{ today | date:'EEEE, MMM d' }}
+    </div>
+    <div class="user-section">
+      <div class="user-info">
+        <span class="user-avatar">👤</span>
+        <span class="user-name">{{ supabase.getUserName() }}</span>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <span>🚪</span> Logout
+      </button>
+    </div>
+  </div>
+</aside>

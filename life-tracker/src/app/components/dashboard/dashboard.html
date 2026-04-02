@@ -1,0 +1,115 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div class="header-left">
+      <h1>{{ greeting() }}, {{ userName() }} 👋</h1>
+      <p class="subtitle">Let's build your best day</p>
+    </div>
+    <div class="header-right">
+      <div class="date-badge">
+        <span class="day">{{ today | date:'d' }}</span>
+        <span class="month">{{ today | date:'MMM' }}</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card primary">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ habitService.todayProgress() }}%</span>
+        <span class="stat-label">Today's Progress</span>
+      </div>
+      <div class="progress-ring">
+        <svg viewBox="0 0 36 36">
+          <path class="circle-bg"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <path class="circle"
+            [style.strokeDasharray]="habitService.todayProgress() + ', 100'"
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ habitService.stats().currentStreak }}</span>
+        <span class="stat-label">Day Streak</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ habitService.stats().weeklyCompletion }}%</span>
+        <span class="stat-label">Weekly Average</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ habitService.stats().completedToday }}/{{ habitService.todayHabits().length }}</span>
+        <span class="stat-label">Completed Today</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <section class="weekly-overview">
+      <h2>This Week</h2>
+      <div class="week-chart">
+        @for (date of weekDates(); track date.toISOString()) {
+          <div class="day-bar" [class.today]="habitService.getDateString(date) === habitService.getTodayString()">
+            <div class="bar-fill" [style.height.%]="getCompletionForDate(date)"></div>
+            <span class="day-label">{{ date | date:'EEE' }}</span>
+            <span class="day-percent">{{ getCompletionForDate(date) }}%</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="category-breakdown">
+      <h2>Categories</h2>
+      <div class="categories-list">
+        @for (cat of categories; track cat[0]) {
+          <div class="category-item">
+            <span class="cat-icon">{{ cat[1].icon }}</span>
+            <span class="cat-name">{{ cat[1].label }}</span>
+            <div class="cat-progress">
+              <div class="cat-bar" [style.width.%]="getCategoryProgress(cat[0])" [style.background]="cat[1].color"></div>
+            </div>
+            <span class="cat-percent">{{ getCategoryProgress(cat[0]) }}%</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="upcoming-habits">
+      <h2>Next Up</h2>
+      @if (getUpcomingHabits().length) {
+        <div class="upcoming-list">
+          @for (habit of getUpcomingHabits(); track habit.id) {
+            <div class="upcoming-item" (click)="habitService.toggleHabit(habit.id)">
+              <span class="habit-icon">{{ habit.icon }}</span>
+              <div class="habit-info">
+                <span class="habit-name">{{ habit.name }}</span>
+                <span class="habit-category">{{ habit.category }}</span>
+              </div>
+              <button class="check-btn">✓</button>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="all-done">
+          <span class="done-icon">🎉</span>
+          <p>All habits completed for today!</p>
+        </div>
+      }
+    </section>
+  </div>
+</div>

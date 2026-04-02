@@ -1,0 +1,99 @@
+<div class="habits-page">
+  <header class="page-header">
+    <div class="header-left">
+      <h1>Today's Habits</h1>
+      <p class="progress-text">{{ habitService.stats().completedToday }} of {{ habitService.todayHabits().length }} completed</p>
+    </div>
+    <button class="add-btn" (click)="openAddModal()">
+      <span>+</span> Add Habit
+    </button>
+  </header>
+
+  <div class="category-filter">
+    <button class="filter-btn" [class.active]="!selectedCategory()" (click)="selectCategory(null)">
+      All
+    </button>
+    @for (cat of categories; track cat[0]) {
+      <button class="filter-btn" [class.active]="selectedCategory() === cat[0]" (click)="selectCategory(cat[0])">
+        <span class="filter-icon">{{ cat[1].icon }}</span>
+        {{ cat[1].label }}
+      </button>
+    }
+  </div>
+
+  <div class="habits-grid">
+    @for (habit of filteredHabits; track habit.id) {
+      <div class="habit-card" [class.completed]="isCompleted(habit)" (click)="toggleHabit(habit)">
+        <div class="habit-left">
+          <div class="habit-check" [style.borderColor]="habit.color">
+            @if (isCompleted(habit)) {
+              <span class="check-mark" [style.background]="habit.color">✓</span>
+            }
+          </div>
+          <div class="habit-content">
+            <span class="habit-icon">{{ habit.icon }}</span>
+            <div class="habit-text">
+              <span class="habit-name">{{ habit.name }}</span>
+              <span class="habit-desc">{{ habit.description }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="habit-right">
+          @if (habit.streak > 0) {
+            <div class="streak-badge">
+              🔥 {{ habit.streak }}
+            </div>
+          }
+          <button class="delete-btn" (click)="deleteHabit(habit.id, $event)">×</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (!filteredHabits.length) {
+    <div class="empty-state">
+      <span class="empty-icon">📋</span>
+      <p>No habits scheduled for today in this category</p>
+    </div>
+  }
+</div>
+
+@if (showAddModal()) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>Add New Habit</h2>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" [(ngModel)]="newHabit.name" placeholder="e.g., Morning meditation">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" [(ngModel)]="newHabit.description" placeholder="Optional description">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select [(ngModel)]="newHabit.category">
+          @for (cat of categories; track cat[0]) {
+            <option [value]="cat[0]">{{ cat[1].icon }} {{ cat[1].label }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Icon</label>
+        <input type="text" [(ngModel)]="newHabit.icon" maxlength="2">
+      </div>
+      <div class="form-group">
+        <label>Frequency</label>
+        <select [(ngModel)]="newHabit.frequency">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeAddModal()">Cancel</button>
+        <button class="btn-primary" (click)="addHabit()">Add Habit</button>
+      </div>
+    </div>
+  </div>
+}
